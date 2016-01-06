@@ -8,6 +8,12 @@ Uses `Sequelize.sync()` but generates ALTER statements instead of DROP+CREATE.
 
 `sequelize-sync-diff` syncs your schema with your database using `sequelize.sync({ force: false })` and you need to provide a _dummy_ database where it will recreate the same schema you have and will call `.sync()` but this time with `{ force: true }`. So at this point you have your working database not fully up to date since `sync()` has its limitations but you have a _dummy_ empty database but with the full schema your data models need. Then, internally, [https://github.com/gimenete/dbdiff](dbdiff) is used to compare both databases and you get the SQL required to execute in your working database to be up to date with your data model changes.
 
+## Installing
+
+```
+npm install sequelize-sync-diff
+```
+
 ## Usage
 
 ```javascript
