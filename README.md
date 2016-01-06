@@ -1,6 +1,8 @@
 # sequelize-sync-diff
 
-Uses Sequelize.sync() but generates ALTER statements instead of DROP+CREATE
+Uses `Sequelize.sync()` but generates ALTER statements instead of DROP+CREATE.
+
+*Only works for postgres right now*. Please open an issue if you need support for other databases.
 
 ## How it works
 
