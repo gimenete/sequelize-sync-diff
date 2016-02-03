@@ -27,9 +27,9 @@ module.exports = function(Sequelize) {
     }
   })
 
-  Sequelize.prototype.syncDiff = function(url) {
+  Sequelize.prototype.syncDiff = function(url, options) {
     var self = this
-    var sequelize = new Sequelize(url, this.options)
+    var sequelize = new Sequelize(url, options || this.options)
     this.diff_actions.forEach(function(action) {
       if (!action.model) {
         sequelize[action.method].apply(sequelize, action.args)
@@ -58,6 +58,9 @@ module.exports = function(Sequelize) {
           selfURL += ':'+self.config.port
         }
         selfURL += '/'+self.config.database
+        if (self.options.dialectOptions && self.options.dialectOptions.ssl) {
+          selfURL += '?ssl=true'
+        }
 
         return new Promise(function (resolve, reject) {
           dbdiff.compareDatabases(selfURL, url, function(err) {
