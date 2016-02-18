@@ -27,9 +27,9 @@ module.exports = function(Sequelize) {
     }
   })
 
-  Sequelize.prototype.syncDiff = function(url, options) {
+  Sequelize.prototype.syncDiff = function(database, username, password, options) {
     var self = this
-    var sequelize = new Sequelize(url, options || this.options)
+    var sequelize = new Sequelize(database, username, password, options || this.options)
     this.diff_actions.forEach(function(action) {
       if (!action.model) {
         sequelize[action.method].apply(sequelize, action.args)
