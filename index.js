@@ -49,21 +49,24 @@ module.exports = function(Sequelize) {
         dbdiff.logger = function(msg) {
           arr.push(msg)
         }
-        var selfURL = self.config.protocol+'://'
-        if (self.config.username && self.config.password) {
-          selfURL += self.config.username+':'+self.config.password+'@'
-        }
-        selfURL += self.config.host
-        if (self.config.port) {
-          selfURL += ':'+self.config.port
-        }
-        selfURL += '/'+self.config.database
-        if (self.options.dialectOptions && self.options.dialectOptions.ssl) {
-          selfURL += '?ssl=true'
-        }
-
+        var masterConfig = {
+          host: self.config.host,
+          port: self.config.port,
+          user: self.config.username,
+          password: self.config.password,
+          database: self.config.database,
+          ssl: self.config.ssl
+        };
+        var dummyConfig = {
+          host: options.host,
+          port: options.port,
+          user: username,
+          password: password,
+          database: database,
+          ssl: options.ssl
+        };
         return new Promise(function (resolve, reject) {
-          dbdiff.compareDatabases(selfURL, url, function(err) {
+          dbdiff.compareDatabases(masterConfig, dummyConfig, function(err) {
             err ? reject(err) : resolve(arr.join('\n'))
           })
         })
