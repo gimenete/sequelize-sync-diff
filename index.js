@@ -40,10 +40,7 @@ module.exports = function(Sequelize) {
       }
     })
 
-    return self.sync()
-      .then(function() {
-        return sequelize.sync({ force: true })
-      })
+    return sequelize.sync({ force: true })
       .then(function() {
         var arr = []
         dbdiff.logger = function(msg) {
