@@ -27,9 +27,9 @@ module.exports = function(Sequelize) {
     }
   })
 
-  Sequelize.prototype.syncDiff = function(url, options) {
+  Sequelize.prototype.syncDiff = function(database, username, password, options) {
     var self = this
-    var sequelize = new Sequelize(url, options || this.options)
+    var sequelize = new Sequelize(database, username, password, options || this.options)
     this.diff_actions.forEach(function(action) {
       if (!action.model) {
         sequelize[action.method].apply(sequelize, action.args)
@@ -40,30 +40,30 @@ module.exports = function(Sequelize) {
       }
     })
 
-    return self.sync()
-      .then(function() {
-        return sequelize.sync({ force: true })
-      })
+    return sequelize.sync({ force: true })
       .then(function() {
         var arr = []
         dbdiff.logger = function(msg) {
           arr.push(msg)
         }
-        var selfURL = self.config.protocol+'://'
-        if (self.config.username && self.config.password) {
-          selfURL += self.config.username+':'+self.config.password+'@'
-        }
-        selfURL += self.config.host
-        if (self.config.port) {
-          selfURL += ':'+self.config.port
-        }
-        selfURL += '/'+self.config.database
-        if (self.options.dialectOptions && self.options.dialectOptions.ssl) {
-          selfURL += '?ssl=true'
-        }
-
+        var masterConfig = {
+          host: self.config.host,
+          port: self.config.port,
+          user: self.config.username,
+          password: self.config.password,
+          database: self.config.database,
+          ssl: self.config.ssl
+        };
+        var dummyConfig = {
+          host: sequelize.config.host,
+          port: sequelize.config.port,
+          user: sequelize.config.username,
+          password: sequelize.config.password,
+          database: sequelize.config.database,
+          ssl: sequelize.config.ssl
+        };
         return new Promise(function (resolve, reject) {
-          dbdiff.compareDatabases(selfURL, url, function(err) {
+          dbdiff.compareDatabases(masterConfig, dummyConfig, function(err) {
             err ? reject(err) : resolve(arr.join('\n'))
           })
         })
