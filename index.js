@@ -55,12 +55,12 @@ module.exports = function(Sequelize) {
           ssl: self.config.ssl
         };
         var dummyConfig = {
-          host: options.host,
-          port: options.port,
-          user: username,
-          password: password,
-          database: database,
-          ssl: options.ssl
+          host: sequelize.config.host,
+          port: sequelize.config.port,
+          user: sequelize.config.username,
+          password: sequelize.config.password,
+          database: sequelize.config.database,
+          ssl: sequelize.config.ssl
         };
         return new Promise(function (resolve, reject) {
           dbdiff.compareDatabases(masterConfig, dummyConfig, function(err) {
