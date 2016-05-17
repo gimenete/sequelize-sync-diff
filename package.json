@@ -1,6 +1,6 @@
 {
   "name": "sequelize-sync-diff",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Uses Sequelize.sync() but generates ALTER statements instead of DROP+CREATE",
   "main": "index.js",
   "scripts": {
@@ -22,10 +22,11 @@
   },
   "homepage": "https://github.com/gimenete/sequelize-sync-diff#readme",
   "dependencies": {
-    "dbdiff": "^0.2.0"
+    "dbdiff": "^0.3.3"
   },
   "devDependencies": {
-    "mocha": "^2.3.4",
-    "sequelize": "^3.16.0"
+    "dedent": "^0.6.0",
+    "mocha": "^2.4.5",
+    "sequelize": "^3.23.2"
   }
 }

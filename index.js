@@ -40,33 +40,21 @@ module.exports = function(Sequelize) {
       }
     })
 
-    return self.sync()
+    var selfOptions = {
+      dialect: self.options.dialect,
+      username: self.config.username,
+      password: self.config.password,
+      database: self.config.database,
+      host: self.config.host,
+      dialectOptions: self.config.dialectOptions
+    }
+    var diff = new dbdiff.DbDiff()
+    return sequelize.sync({ force: true })
       .then(function() {
-        return sequelize.sync({ force: true })
+        return diff.compare(selfOptions, url)
       })
       .then(function() {
-        var arr = []
-        dbdiff.logger = function(msg) {
-          arr.push(msg)
-        }
-        var selfURL = self.config.protocol+'://'
-        if (self.config.username && self.config.password) {
-          selfURL += self.config.username+':'+self.config.password+'@'
-        }
-        selfURL += self.config.host
-        if (self.config.port) {
-          selfURL += ':'+self.config.port
-        }
-        selfURL += '/'+self.config.database
-        if (self.options.dialectOptions && self.options.dialectOptions.ssl) {
-          selfURL += '?ssl=true'
-        }
-
-        return new Promise(function (resolve, reject) {
-          dbdiff.compareDatabases(selfURL, url, function(err) {
-            err ? reject(err) : resolve(arr.join('\n'))
-          })
-        })
+        return diff.commands('drop')
       })
   }
 }

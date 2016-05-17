@@ -32,8 +32,8 @@ var Project = sequelize.define('Project', {/* ... */})
 Project.hasOne(User)
 
 // Now is time to use .syncDiff()
-sequelize
-  .syncDiff('postgres://aro:aro@localhost/database_dummy')
+sequelize.sync()
+  .then(() => sequelize.syncDiff('postgres://aro:aro@localhost/database_dummy'))
   .then(function(sql) {
     // Here we have the ALTER statemetns
     console.log(sql)
